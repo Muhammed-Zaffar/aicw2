@@ -12,7 +12,8 @@ def sigmoid(x):
 
 
 class NeuralNetwork:
-	def __init__(self, num_input_nodes=8, num_hidden_nodes=4, num_output_nodes=1):
+	def __init__(self, num_input_nodes=8, num_hidden_nodes=4, num_output_nodes=1, momentum=False):
+		self.momentum = momentum
 		self.num_input_nodes = num_input_nodes
 		self.num_hidden_nodes = num_hidden_nodes
 		self.num_output_nodes = num_output_nodes
@@ -102,17 +103,20 @@ class NeuralNetwork:
 			# Update weights from hidden to output layer
 			for j in range(self.num_hidden_nodes + 1):  # +1 for the bias weight
 				# Update the weights for the output layer; assumes single output node
-				self.output_nodes_weights[0, j] += learning_rate * output_layer_delta * self.hidden_layer[i][j] + 0.9 * self.prev_update_output
-				self.prev_update_output = learning_rate * output_layer_delta * self.hidden_layer[i][j]
-
+				self.output_nodes_weights[0, j] += learning_rate * output_layer_delta * self.hidden_layer[i][
+					j] + 0.9 * self.prev_update_output
+				if self.momentum:
+					self.prev_update_output = learning_rate * output_layer_delta * self.hidden_layer[i][j]
 
 			# Update weights from input to hidden layer
 			input_layer = np.insert(self.data.values[i][:self.num_input_nodes], 0, 1)  # Insert bias to the input layer
 			for h in range(self.num_hidden_nodes):
 				for j in range(self.num_input_nodes + 1):  # +1 for the bias
 					# Update the weights for the hidden layer
-					self.hidden_nodes_weights[h, j] += learning_rate * hidden_layer_delta[h] * input_layer[j] + 0.9 * self.prev_update_hidden
-					self.prev_update_hidden = learning_rate * hidden_layer_delta[h] * input_layer[j]
+					self.hidden_nodes_weights[h, j] += learning_rate * hidden_layer_delta[h] * input_layer[
+						j] + 0.9 * self.prev_update_hidden
+					if self.momentum:
+						self.prev_update_hidden = learning_rate * hidden_layer_delta[h] * input_layer[j]
 
 	def train_network(self, num_epochs=1000):
 		validation_RMSE_array = list()
@@ -152,14 +156,13 @@ class NeuralNetwork:
 		x = self.forward_pass()
 		self.rmse.pop()
 		print(f"{x=}")
-		# self.plot_rmse()
-
+	# self.plot_rmse()
 
 
 if __name__ == "__main__":
 	arr = list()
 	# for i in range(4, 17):
-	nn = NeuralNetwork(num_hidden_nodes=8)
+	nn = NeuralNetwork(num_hidden_nodes=8, momentum=False)
 
 	# Assume you have a method to train the network
 	nn.train_network(num_epochs=1000)
@@ -174,11 +177,11 @@ if __name__ == "__main__":
 	plt.legend()
 	plt.show()
 
-	# for i in arr:
-	# 	final_rmse = i[-1]
-	# 	# plot the nodes against the final rmse
-	# 	plt.scatter(arr.index(i) + 4, final_rmse)
-	# 	plt.xlabel("Number of Hidden Nodes")
-	# 	plt.ylabel("Final RMSE")
-	# 	plt.title("Number of Hidden Nodes vs. Final RMSE")
-	# plt.show()
+# for i in arr:
+# 	final_rmse = i[-1]
+# 	# plot the nodes against the final rmse
+# 	plt.scatter(arr.index(i) + 4, final_rmse)
+# 	plt.xlabel("Number of Hidden Nodes")
+# 	plt.ylabel("Final RMSE")
+# 	plt.title("Number of Hidden Nodes vs. Final RMSE")
+# plt.show()
