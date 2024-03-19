@@ -1,0 +1,34 @@
+For your "AI Methods" coursework, you are required to:
+
+1. Pre-process a given dataset.
+2. Implement an algorithm in a suitable programming language.
+3. Document and comment on your implementation.
+4. Configure and adjust weights for ANN model training.
+5. Evaluate the ANN.
+6. Compare it with a simple regression model.
+7. Write a report detailing the process and discussing model evaluation.
+
+You must not use numerical computing environments or pre-written neural network systems. You can use libraries like numpy, Matplotlib, and pandas. Suitable programming languages include Python, Java, C#, C++, or C. Your submission will be evaluated based on code quality, data pre-processing, algorithm implementation, training, model evaluation, and comparison with another model.
+
+---------------------
+
+To start coding the backpropagation algorithm for your neural network in Python, follow these steps using libraries like NumPy for efficient computation:
+
+1. **Initialize Your Network**: Define the structure of your neural network, including the number of input nodes (based on your data features), hidden layers (starting with 1 layer of 4 nodes as you mentioned), and output nodes. Initialize the weights randomly.
+
+2. **Forward Propagation**: Implement the forward pass to calculate the output of the neural network. For each node, sum the product of the inputs and their corresponding weights, apply the sigmoid activation function to this sum to get the node's output.
+
+3. **Compute the Loss**: Use the Mean Squared Error (MSE) to calculate the loss. The MSE is the average of the squared differences between the predicted outputs and the actual values.
+
+4. **Backpropagation**: Calculate the gradient of the loss function with respect to each weight in the network by applying the chain rule. This involves computing the derivative of the loss function with respect to the output of each node and then the derivative of each node output with respect to its weights.
+
+5. **Update Weights**: Adjust the weights of the network using the gradients calculated in the backpropagation step. This is usually done using a learning rate parameter to control the size of the weight updates.
+
+6. **Repeat**: Perform forward propagation, compute the loss, backpropagate the errors, and update the weights for a specified number of epochs or until the loss converges to a minimum value.
+
+7. **Evaluate**: After training, evaluate the performance of your model on the validation set to adjust hyperparameters or the architecture as needed.
+
+For specific code implementations and a more detailed explanation, I recommend referring to educational resources or tutorials that cover neural network implementation from scratch in Python. This step-by-step guide should give you a good starting point for coding the backpropagation algorithm with your training data.
+
+---------------------
+
