@@ -152,13 +152,14 @@ class NeuralNetwork:
 
 if __name__ == "__main__":
 	arr = list()
-	for i in range(4, 17):
-		nn = NeuralNetwork(num_hidden_nodes=i)
+	# for i in range(4, 17):
+	nn = NeuralNetwork(num_hidden_nodes=8)
 
-		# Assume you have a method to train the network
-		nn.train_network(num_epochs=1000)
-		nn.test_network()
-		arr.append(nn.get_rmse())
+	# Assume you have a method to train the network
+	nn.train_network(num_epochs=1000)
+	nn.test_network()
+	arr.append(nn.get_rmse())
+
 	for i in arr:
 		plt.plot(i, label=f"Hidden Nodes: {arr.index(i) + 4}")
 	plt.xlabel("Epochs")
@@ -167,11 +168,11 @@ if __name__ == "__main__":
 	plt.legend()
 	plt.show()
 
-	for i in arr:
-		final_rmse = i[-1]
-		# plot the nodes against the final rmse
-		plt.scatter(arr.index(i) + 4, final_rmse)
-		plt.xlabel("Number of Hidden Nodes")
-		plt.ylabel("Final RMSE")
-		plt.title("Number of Hidden Nodes vs. Final RMSE")
-	plt.show()
+	# for i in arr:
+	# 	final_rmse = i[-1]
+	# 	# plot the nodes against the final rmse
+	# 	plt.scatter(arr.index(i) + 4, final_rmse)
+	# 	plt.xlabel("Number of Hidden Nodes")
+	# 	plt.ylabel("Final RMSE")
+	# 	plt.title("Number of Hidden Nodes vs. Final RMSE")
+	# plt.show()
