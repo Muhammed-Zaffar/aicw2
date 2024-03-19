@@ -33,6 +33,9 @@ class NeuralNetwork:
 		self.output_nodes_weights = np.random.uniform(-2 / num_hidden_nodes, 2 / num_hidden_nodes,
 													  (num_output_nodes, num_hidden_nodes + 1))
 
+		self.prev_update_output = 0
+		self.prev_update_hidden = 0
+
 	def get_predicted_results_length(self):
 		return f"number of predictands is: {len(self.predicted_results)}"
 
@@ -99,14 +102,17 @@ class NeuralNetwork:
 			# Update weights from hidden to output layer
 			for j in range(self.num_hidden_nodes + 1):  # +1 for the bias weight
 				# Update the weights for the output layer; assumes single output node
-				self.output_nodes_weights[0, j] += learning_rate * output_layer_delta * self.hidden_layer[i][j]
+				self.output_nodes_weights[0, j] += learning_rate * output_layer_delta * self.hidden_layer[i][j] + 0.9 * self.prev_update_output
+				self.prev_update_output = learning_rate * output_layer_delta * self.hidden_layer[i][j]
+
 
 			# Update weights from input to hidden layer
 			input_layer = np.insert(self.data.values[i][:self.num_input_nodes], 0, 1)  # Insert bias to the input layer
 			for h in range(self.num_hidden_nodes):
 				for j in range(self.num_input_nodes + 1):  # +1 for the bias
 					# Update the weights for the hidden layer
-					self.hidden_nodes_weights[h, j] += learning_rate * hidden_layer_delta[h] * input_layer[j]
+					self.hidden_nodes_weights[h, j] += learning_rate * hidden_layer_delta[h] * input_layer[j] + 0.9 * self.prev_update_hidden
+					self.prev_update_hidden = learning_rate * hidden_layer_delta[h] * input_layer[j]
 
 	def train_network(self, num_epochs=1000):
 		validation_RMSE_array = list()
@@ -152,13 +158,14 @@ class NeuralNetwork:
 
 if __name__ == "__main__":
 	arr = list()
-	for i in range(4, 17):
-		nn = NeuralNetwork(num_hidden_nodes=i)
+	# for i in range(4, 17):
+	nn = NeuralNetwork(num_hidden_nodes=8)
 
-		# Assume you have a method to train the network
-		nn.train_network(num_epochs=1000)
-		nn.test_network()
-		arr.append(nn.get_rmse())
+	# Assume you have a method to train the network
+	nn.train_network(num_epochs=1000)
+	nn.test_network()
+	arr.append(nn.get_rmse())
+
 	for i in arr:
 		plt.plot(i, label=f"Hidden Nodes: {arr.index(i) + 4}")
 	plt.xlabel("Epochs")
@@ -167,11 +174,11 @@ if __name__ == "__main__":
 	plt.legend()
 	plt.show()
 
-	for i in arr:
-		final_rmse = i[-1]
-		# plot the nodes against the final rmse
-		plt.scatter(arr.index(i) + 4, final_rmse)
-		plt.xlabel("Number of Hidden Nodes")
-		plt.ylabel("Final RMSE")
-		plt.title("Number of Hidden Nodes vs. Final RMSE")
-	plt.show()
+	# for i in arr:
+	# 	final_rmse = i[-1]
+	# 	# plot the nodes against the final rmse
+	# 	plt.scatter(arr.index(i) + 4, final_rmse)
+	# 	plt.xlabel("Number of Hidden Nodes")
+	# 	plt.ylabel("Final RMSE")
+	# 	plt.title("Number of Hidden Nodes vs. Final RMSE")
+	# plt.show()
