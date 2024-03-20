@@ -27,13 +27,6 @@ def removeAnomalies(clean_df):
 	return clean_df
 
 
-def scale_column(column, min_scale=0.9, max_scale=0.1):
-	min_value = column.min()
-	max_value = column.max()
-	scaled_column = min_scale + ((column - min_value) * (max_scale - min_scale)) / (max_value - min_value)
-	return scaled_column, min_value, max_value
-
-
 def standardize_df(df, mins, maxes, lower=0.1, upper=0.9):
 	# Standardizes all values in a DataFrame to a specific range [lower, upper]
 	# using provided min and max values.
@@ -71,11 +64,7 @@ if __name__ == "__main__":
 	validate_df = clean_df.iloc[train_end:validate_end]
 	test_df = clean_df.iloc[validate_end:]
 
-	# Min-Max scaling training and validation data
-	# train_df = train_df.apply(lambda x: scale_column(x))
-	# validate_df = validate_df.apply(lambda x: scale_column(x))
-	# test_df = test_df.apply(lambda x: scale_column(x))
-
+	# Min-Max scaling according to training and validation data
 	combined_df = pd.concat([train_df, validate_df])
 	mins = combined_df.min()
 	maxes = combined_df.max()
