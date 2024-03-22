@@ -160,7 +160,7 @@ class NeuralNetwork:
 					# if the learning rate is too small, set it to 0.01
 					if self.learning_rate < 0.001:
 						self.learning_rate = 0.001
-					elif self.learning_rate > 0.2:  # if the learning rate is too large, set it to 0.15
+					elif self.learning_rate > 0.2:  # if the learning rate is too large, set it to 0.2
 						self.learning_rate = 0.2
 
 			if i % 1 == 0:
@@ -250,7 +250,7 @@ if __name__ == "__main__":
 			if not os.path.exists(graphs_dir):
 				os.makedirs(graphs_dir)
 
-			nn.train_network(num_epochs=10)
+			nn.train_network(num_epochs=1000)
 			nn.test_network()
 
 			# Append RMSE of the final model to the results
@@ -259,7 +259,7 @@ if __name__ == "__main__":
 	# Plotting the results for each setting
 	for setting_index, rmse_values in results.items():
 		setting = settings[setting_index]
-		plt.figure()
+		plt.figure(figsize=(8, 8))
 		plt.plot(range(4, 17), rmse_values, marker='o', linestyle='-')
 		plt.xlabel("Number of Hidden Nodes")
 		plt.ylabel("Root Mean Squared Error")
