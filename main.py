@@ -225,46 +225,49 @@ class NeuralNetwork:
 if __name__ == "__main__":
 	matplotlib.use('TkAgg')
 	plt.rcParams['figure.figsize'] = [8, 6]
-	manager = plt.get_current_fig_manager()
-	manager.window.wm_geometry("+0+0")
 
-	arr = list()
+	settings = [
+		{'momentum': False, 'bold_driver': False},
+		{'momentum': True, 'bold_driver': False},
+		{'momentum': False, 'bold_driver': True},
+		{'momentum': True, 'bold_driver': True}
+	]
+
+	# Store RMSE values for each setting and number of hidden nodes
+	results = {setting_index: [] for setting_index in range(len(settings))}
+
 	t_start = time.perf_counter()
-	for i in range(4, 17):
-		nn = NeuralNetwork(num_hidden_nodes=i, momentum=False, bold_driver=False, learning_rate=0.1)
 
-		graph_counter = 0
-		graphs_dir = f"pics/{nn.original_num_hidden_nodes=}-{nn.original_momentum=}-{nn.original_bold_driver=}"
-		if not os.path.exists(graphs_dir):
-			os.makedirs(graphs_dir)
+	for num_hidden_nodes in range(4, 17):
+		for setting_index, setting in enumerate(settings):
+			nn = NeuralNetwork(num_hidden_nodes=num_hidden_nodes,
+							   momentum=setting["momentum"],
+							   bold_driver=setting["bold_driver"],
+							   learning_rate=0.1)
 
-		nn.train_network(num_epochs=1000)
-		nn.test_network()
+			graph_counter = 0
+			graphs_dir = f"pics/{nn.original_num_hidden_nodes=}-{nn.original_momentum=}-{nn.original_bold_driver=}"
+			if not os.path.exists(graphs_dir):
+				os.makedirs(graphs_dir)
 
-		arr.append(nn.get_rmse())
-	# end of for loop
+			nn.train_network(num_epochs=10)
+			nn.test_network()
 
+			# Append RMSE of the final model to the results
+			results[setting_index].append(nn.get_rmse()[-1])  # Assuming get_rmse() returns a list of RMSE over epochs
 
-	for i in arr:
-		plt.plot(i, label=f"Hidden Nodes: {arr.index(i) + 4}")
-	plt.xlabel("Epochs")
-	plt.ylabel("Root Mean Squared Error")
-	plt.title(f"Root Mean Squared Error vs. Epochs, \n{nn.original_momentum=}, {nn.original_bold_driver=}, \n{nn.original_learning_rate=}")
-	plt.plot(nn.rmse.index(min(nn.rmse)), min(nn.rmse), "ro", label="Minimum RMSE")
-	plt.legend()
-	plt.savefig(os.path.join(f"pics/graph{graph_counter}.png"))
-	graph_counter += 1
-	plt.close()
-	# plt.show()
+	# Plotting the results for each setting
+	for setting_index, rmse_values in results.items():
+		setting = settings[setting_index]
+		plt.figure()
+		plt.plot(range(4, 17), rmse_values, marker='o', linestyle='-')
+		plt.xlabel("Number of Hidden Nodes")
+		plt.ylabel("Root Mean Squared Error")
+		plt.title(f"RMSE vs. Hidden Nodes\nMomentum={setting['momentum']}, Bold Driver={setting['bold_driver']}")
+		plt.grid(True)
+		plt.savefig(
+			f"pics/setting_{setting_index + 1}_momentum_{setting['momentum']}_boldDriver_{setting['bold_driver']}.png")
+		plt.close()
 
 	t_end = time.perf_counter()
 	print(f"Time taken: {t_end - t_start} seconds")
-
-# for i in arr:
-# 	final_rmse = i[-1]
-# 	# plot the nodes against the final rmse
-# 	plt.scatter(arr.index(i) + 4, final_rmse)
-# 	plt.xlabel("Number of Hidden Nodes")
-# 	plt.ylabel("Final RMSE")
-# 	plt.title("Number of Hidden Nodes vs. Final RMSE")
-# plt.show()
